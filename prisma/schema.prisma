@@ -172,7 +172,7 @@ model Sale {
   userId          String    @db.Uuid
   medicineId      String    @db.Uuid
   quantity        Int
-  totalAmount     Decimal   @db.Decimal(10, 2)
+  totalAmount     Decimal   @db.Decimal(10, 2) @map("total_price")
   customerName    String?   @default("Walk-in Customer") @map("customer_name")
   
   branch          Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)

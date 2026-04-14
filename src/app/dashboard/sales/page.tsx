@@ -107,13 +107,8 @@ export default function POSTerminal() {
       const { error } = await supabase.from('sales').insert(salesData);
       if (error) throw error;
 
-      // Manual Stock update
-      for (const item of cart) {
-        await supabase
-          .from('medicines')
-          .update({ stock_quantity: item.stock - item.quantity })
-          .eq('id', item.id);
-      }
+      // Note: Stock update is handled automatically by the 'update_stock_after_sale' 
+      // database trigger. Manual deduction removed to prevent double-decrement.
 
       // Generate Receipt Data
       const receiptData = {
