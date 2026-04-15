@@ -3,5 +3,7 @@
   "css.lint.unknownAtRules": "ignore",
   "tailwindCSS.includeLanguages": {
     "plaintext": "css"
-  }
+  },
+  "cSpell.configFile": ".cspellrc.json",
+  "cSpell.enabled": true
 }

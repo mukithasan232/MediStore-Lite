@@ -3,7 +3,10 @@
 
 import { db } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { RoleType } from "@prisma/client";
+import { RoleType, SubscriptionStatus, SubscriptionPlan } from "@prisma/client";
+import { addDays } from 'date-fns';
+
+const TRIAL_DAYS = 30;
 
 export async function registerInitialAdmin(email: string, pass: string, name: string) {
   const hashedPassword = await bcrypt.hash(pass, 10);
@@ -26,6 +29,22 @@ export async function registerInitialAdmin(email: string, pass: string, name: st
         lastName: "",
         role: "SUPER_ADMIN",
       }
+    });
+
+    // Auto-create subscription with free trial
+    const trialStartDate = new Date();
+    const trialEndDate = addDays(trialStartDate, TRIAL_DAYS);
+    
+    await db.subscription.create({
+      data: {
+        userId: user.id,
+        plan: SubscriptionPlan.STARTER,
+        status: SubscriptionStatus.TRIAL,
+        trialStartDate,
+        trialEndDate,
+        nextBillingDate: trialEndDate,
+        billingEmail: email,
+      },
     });
 
     return { success: true, user: { id: user.id, email: user.email, role: user.role } };

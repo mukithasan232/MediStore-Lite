@@ -190,3 +190,111 @@ enum TransferStatus {
   COMPLETED
   REJECTED
 }
+
+// ==========================================
+// 5. SUBSCRIPTION & BILLING MANAGEMENT
+// ==========================================
+
+enum SubscriptionStatus {
+  TRIAL        // Free 1-month trial period
+  ACTIVE       // Paid subscription is active
+  PAUSED       // Temporarily paused by user
+  CANCELLED    // User cancelled subscription
+  EXPIRED      // Trial/subscription period expired
+  PENDING_PAYMENT  // Payment pending
+}
+
+enum SubscriptionPlan {
+  STARTER      // 1000 BDT/month
+}
+
+model Subscription {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId                String    @unique @db.Uuid
+  plan                  SubscriptionPlan @default(STARTER)
+  status                SubscriptionStatus @default(TRIAL)
+  
+  // Trial period
+  trialStartDate        DateTime  @default(now())
+  trialEndDate          DateTime  // 30 days from signup
+  
+  // Paid subscription
+  currentPeriodStart    DateTime?
+  currentPeriodEnd      DateTime?
+  
+  // Renewal tracking
+  nextBillingDate       DateTime?
+  lastBillingDate       DateTime?
+  
+  // Payment info
+  paymentMethod         String?   // SSLCOMMERZ, CARD, etc.
+  sslCommerzCustomerId  String?   // For recurring payments
+  
+  // Auto-renewal settings
+  autoRenew             Boolean   @default(true)
+  
+  // Contact info for billing
+  companyName           String?
+  billingEmail          String?
+  billingPhone          String?
+  billingAddress        String?
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  invoices              Invoice[]
+  payments              Payment[]
+}
+
+model Invoice {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  subscriptionId        String    @db.Uuid
+  invoiceNumber         String    @unique // INV-2026-0001
+  
+  amount                Decimal   @db.Decimal(10, 2)  // 1000.00 BDT per month
+  currency              String    @default("BDT")
+  
+  billingPeriodStart    DateTime
+  billingPeriodEnd      DateTime
+  dueDate               DateTime
+  
+  status                String    @default("UNPAID")  // UNPAID, PAID, OVERDUE, CANCELLED
+  paidDate              DateTime?
+  
+  description           String    // "MediStore Lite - Subscription (Month of April 2026)"
+  
+  subscription          Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  payments              Payment[]
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([subscriptionId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+model Payment {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  subscriptionId        String    @db.Uuid
+  invoiceId             String?   @db.Uuid
+  
+  referenceId           String?   @unique  // SSLCommerz transaction ID
+  amount                Decimal   @db.Decimal(10, 2)
+  currency              String    @default("BDT")
+  
+  paymentMethod         String    // SSLCOMMERZ, MANUAL, etc.
+  status                String    @default("PENDING")  // PENDING, SUCCESS, FAILED, REFUNDED
+  
+  paymentGatewayResponse String?  // JSON response from gateway
+  
+  subscription          Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  invoice               Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([subscriptionId])
+  @@index([status])
+  @@index([referenceId])
+}
