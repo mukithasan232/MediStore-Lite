@@ -93,11 +93,7 @@ export async function getPendingBKashPayments() {
       },
       include: {
         invoice: true,
-        subscription: {
-          include: {
-            userId: false, // Don't include full user for security
-          },
-        },
+        subscription: true,
       },
       orderBy: { createdAt: 'desc' },
     });

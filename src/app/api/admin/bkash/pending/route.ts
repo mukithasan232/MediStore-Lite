@@ -30,10 +30,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const payments = result.payments || [];
     return NextResponse.json({
       success: true,
-      payments: result.payments,
-      totalPending: result.payments.length,
+      payments: payments,
+      totalPending: payments.length,
     });
   } catch (error: any) {
     console.error('Get pending payments error:', error);

@@ -86,8 +86,15 @@ export default function BillingPage() {
 
       // Fetch subscription status
       const subResult = await getSubscriptionStatus(user.id);
-      if (subResult.success) {
-        setSubscription(subResult.subscription);
+      if (subResult.success && subResult.subscription) {
+        const sub = subResult.subscription as any;
+        setSubscription({
+          ...sub,
+          trialStartDate: sub.trialStartDate instanceof Date ? sub.trialStartDate.toISOString() : sub.trialStartDate,
+          trialEndDate: sub.trialEndDate instanceof Date ? sub.trialEndDate.toISOString() : sub.trialEndDate,
+          nextBillingDate: sub.nextBillingDate instanceof Date ? sub.nextBillingDate.toISOString() : sub.nextBillingDate,
+          currentPeriodEnd: sub.currentPeriodEnd instanceof Date ? sub.currentPeriodEnd.toISOString() : sub.currentPeriodEnd,
+        });
       }
 
       // Fetch invoices
@@ -192,6 +199,8 @@ export default function BillingPage() {
       setPaymentLoading(false);
     }
   };
+
+  const filteredInvoices = invoices.filter(invoice =>
     invoice.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
     invoice.description.toLowerCase().includes(search.toLowerCase())
   );
@@ -352,7 +361,7 @@ export default function BillingPage() {
               )}
 
               <button
-                onClick={() => toast.info('Contact support: support@medistore.com')}
+                onClick={() => toast.success('Contact support: support@medistore.com')}
                 className="flex-1 px-6 py-4 bg-gray-100 text-gray-900 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-200 transition-all border border-gray-200"
               >
                 Manage Billing
