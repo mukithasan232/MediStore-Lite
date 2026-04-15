@@ -209,44 +209,45 @@ export default function POSTerminal() {
   );
 
   return (
-    <div className="flex h-[calc(100vh-140px)] gap-6 overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-140px)] gap-4 lg:gap-6 overflow-hidden p-4 lg:p-0">
       {/* Left Part: Product Selection */}
-      <div className="flex-1 flex flex-col gap-6 overflow-hidden">
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-4">
+      <div className="flex-1 flex flex-col gap-4 lg:gap-6 overflow-hidden">
+        <div className="bg-white p-4 lg:p-6 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-2 lg:gap-4">
           <div className="relative flex-1">
-             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+             <Search className="absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
              <input 
                ref={searchInputRef}
                type="text" 
                placeholder="Search medicine (Ctrl+F)..."
                value={search}
                onChange={(e) => setSearch(e.target.value)}
-               className="w-full pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-medium"
+               className="w-full pl-10 lg:pl-12 pr-3 lg:pr-4 py-3 lg:py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-medium text-xs lg:text-base"
              />
           </div>
-          <button onClick={() => setSearch('')} className="p-4 bg-gray-100 hover:bg-gray-200 rounded-2xl text-gray-500 transition-all">
-             Reset
+          <button onClick={() => setSearch('')} className="p-3 lg:p-4 bg-gray-100 hover:bg-gray-200 rounded-2xl text-gray-500 transition-all shrink-0">
+             <Search size={16} className="lg:hidden" />
+             <span className="hidden lg:block">Reset</span>
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-10">
+        <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 pb-10">
           {filteredMedicines.map(med => (
             <button 
               key={med.id} 
               onClick={() => addToCart(med)}
-              className="bg-white p-5 rounded-2xl border border-gray-100 hover:border-blue-500 hover:shadow-xl hover:-translate-y-1 text-left transition-all group relative overflow-hidden"
+              className="bg-white p-3 lg:p-5 rounded-2xl border border-gray-100 hover:border-blue-500 hover:shadow-xl hover:-translate-y-1 text-left transition-all group relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Plus className="bg-blue-600 text-white rounded-lg p-1" size={24} />
+                <Plus className="bg-blue-600 text-white rounded-lg p-1" size={20} />
               </div>
-              <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">{med.category}</p>
-              <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors uppercase leading-tight">{med.name}</h3>
-              <div className="mt-4 flex justify-between items-end">
+              <p className="text-[7px] lg:text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">{med.category}</p>
+              <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors uppercase leading-tight text-[10px] lg:text-sm">{med.name}</h3>
+              <div className="mt-3 lg:mt-4 flex justify-between items-end">
                  <div>
-                   <p className="text-xs text-gray-400">Available Stock</p>
-                   <p className="font-bold text-gray-700">{med.stock_quantity}</p>
+                   <p className="text-[7px] lg:text-xs text-gray-400">Stock</p>
+                   <p className="font-bold text-gray-700 text-xs lg:text-base">{med.stock_quantity}</p>
                  </div>
-                 <p className="text-lg font-black text-blue-600">৳{med.selling_price}</p>
+                 <p className="text-sm lg:text-lg font-black text-blue-600">৳{med.selling_price}</p>
               </div>
             </button>
           ))}
@@ -254,64 +255,66 @@ export default function POSTerminal() {
       </div>
 
       {/* Right Part: Cart and Checkout */}
-      <div className="w-[450px] flex flex-col gap-6">
+      <div className="w-full lg:w-[450px] flex flex-col gap-4 lg:gap-6">
         <div className="flex-1 bg-white rounded-3xl shadow-xl border border-blue-50 flex flex-col overflow-hidden">
-          <div className="p-6 bg-blue-600 text-white flex justify-between items-center">
+          <div className="p-4 lg:p-6 bg-blue-600 text-white flex justify-between items-center">
              <div className="flex items-center gap-2">
-                <ShoppingCart size={24} />
-                <h2 className="font-black text-lg uppercase tracking-wider">Checkout Cart</h2>
+                <ShoppingCart size={20} className="lg:block hidden" />
+                <ShoppingCart size={18} className="lg:hidden block" />
+                <h2 className="font-black text-sm lg:text-lg uppercase tracking-wider">Checkout</h2>
              </div>
-             <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold">{cart.length} Items</span>
+             <span className="bg-white/20 px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold">{cart.length}</span>
           </div>
 
-          <div className="p-4 bg-blue-50 border-b border-blue-100">
+          <div className="p-3 lg:p-4 bg-blue-50 border-b border-blue-100">
              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400" size={18} />
+                <User className="absolute left-2 lg:left-3 top-1/2 -translate-y-1/2 text-blue-400" size={16} />
                 <input 
                   type="text" 
                   placeholder="Customer Name (Optional)"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white border-none rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm font-bold"
+                  className="w-full pl-8 lg:pl-10 pr-3 lg:pr-4 py-2 lg:py-2 bg-white border-none rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-xs lg:text-sm font-bold"
                 />
              </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 overflow-y-auto p-3 lg:p-4 space-y-2 lg:space-y-3">
              {cart.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-4">
-                   <Package size={48} className="opacity-20" />
-                   <p className="font-bold text-sm tracking-widest uppercase opacity-40">Cart is empty</p>
+                <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-3 lg:gap-4">
+                   <Package size={40} className="lg:block hidden opacity-20" />
+                   <Package size={32} className="lg:hidden block opacity-20" />
+                   <p className="font-bold text-[10px] lg:text-sm tracking-widest uppercase opacity-40">Cart is empty</p>
                 </div>
              ) : (
                cart.map(item => (
-                 <div key={item.id} className="bg-gray-50 p-4 rounded-xl border border-gray-100 flex flex-col gap-2">
+                 <div key={item.id} className="bg-gray-50 p-3 lg:p-4 rounded-xl border border-gray-100 flex flex-col gap-1 lg:gap-2">
                     <div className="flex justify-between items-start">
-                       <h4 className="font-black text-gray-800 text-xs uppercase tracking-tight">{item.name}</h4>
-                       <button onClick={() => removeFromCart(item.id)} className="text-gray-300 hover:text-red-500 transition-colors">
-                          <Trash2 size={16} />
+                       <h4 className="font-black text-gray-800 text-[9px] lg:text-xs uppercase tracking-tight flex-1">{item.name}</h4>
+                       <button onClick={() => removeFromCart(item.id)} className="text-gray-300 hover:text-red-500 transition-colors shrink-0 ml-1">
+                          <Trash2 size={14} />
                        </button>
                     </div>
-                    <div className="flex justify-between items-center">
-                       <div className="flex items-center gap-3 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm">
-                          <button onClick={() => updateQuantity(item.id, -1)} className="p-1 hover:text-blue-600"><Minus size={14} /></button>
+                    <div className="flex justify-between items-center gap-2">
+                       <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm">
+                          <button onClick={() => updateQuantity(item.id, -1)} className="p-1 hover:text-blue-600"><Minus size={12} /></button>
                           <span className="font-black text-sm w-4 text-center">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.id, 1)} className="p-1 hover:text-blue-600"><Plus size={14} /></button>
+                          <button onClick={() => updateQuantity(item.id, 1)} className="p-1 hover:text-blue-600"><Plus size={12} /></button>
                        </div>
-                       <p className="font-bold text-gray-900 text-sm">৳{(item.price * item.quantity).toFixed(2)}</p>
+                       <p className="font-bold text-gray-900 text-xs lg:text-sm">৳{(item.price * item.quantity).toFixed(2)}</p>
                     </div>
                  </div>
                ))
              )}
           </div>
 
-          <div className="p-6 bg-gray-50 border-t border-gray-200 space-y-6">
-             <div className="space-y-2">
-                <div className="flex justify-between text-sm text-gray-500 font-bold uppercase tracking-widest">
+          <div className="p-4 lg:p-6 bg-gray-50 border-t border-gray-200 space-y-4 lg:space-y-6">
+             <div className="space-y-1 lg:space-y-2">
+                <div className="flex justify-between text-[10px] lg:text-sm text-gray-500 font-bold uppercase tracking-widest">
                    <span>Subtotal</span>
                    <span>৳{subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-2xl font-black text-gray-900 pt-2 border-t border-gray-200">
+                <div className="flex justify-between text-lg lg:text-2xl font-black text-gray-900 pt-2 border-t border-gray-200">
                    <span>Total</span>
                    <span>৳{total.toFixed(2)}</span>
                 </div>
@@ -320,18 +323,19 @@ export default function POSTerminal() {
              <button 
                onClick={handleCheckout}
                disabled={loading || cart.length === 0}
-               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-all shadow-xl shadow-blue-100 disabled:opacity-50"
+               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 lg:py-5 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-2 lg:gap-3 transition-all shadow-xl shadow-blue-100 disabled:opacity-50 text-xs lg:text-base"
              >
-                <CreditCard size={24} />
+                <CreditCard size={18} className="lg:block hidden" />
+                <CreditCard size={16} className="lg:hidden block" />
                 {loading ? "Processing..." : "Finish & Print"}
              </button>
           </div>
         </div>
         
         {/* Quick Receipt Stats */}
-        <div className="bg-white p-4 rounded-2xl border border-gray-100 flex items-center justify-between text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+        <div className="bg-white p-3 lg:p-4 rounded-2xl border border-gray-100 flex items-center justify-between text-[8px] lg:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
            <span>Date: {format(new Date(), 'dd-MMM-yy')}</span>
-           <span className="flex items-center gap-1"><AlertCircle size={10} /> Auto-Stock Update</span>
+           <span className="flex items-center gap-1"><AlertCircle size={10} /> Auto-Stock</span>
         </div>
       </div>
     </div>
